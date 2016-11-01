@@ -21,7 +21,7 @@ const (
 
 	// Identify this Rollbar client library to the Rollbar API.
 	clientName     = "go-roll"
-	clientVersion  = "0.1.1"
+	clientVersion  = "0.1.2"
 	clientLanguage = "go"
 )
 
@@ -40,19 +40,19 @@ var (
 )
 
 type rollbarSuccess struct {
-	Result map[string]string `json:"result"`
+	Result map[string]interface{} `json:"result"`
 }
 
 // Client reports items to a single Rollbar project.
 type Client interface {
-	Critical(err error, custom map[string]string) (uuid string, e error)
-	CriticalStack(err error, ptrs []uintptr, custom map[string]string) (uuid string, e error)
-	Error(err error, custom map[string]string) (uuid string, e error)
-	ErrorStack(err error, ptrs []uintptr, custom map[string]string) (uuid string, e error)
-	Warning(err error, custom map[string]string) (uuid string, e error)
-	WarningStack(err error, ptrs []uintptr, custom map[string]string) (uuid string, e error)
-	Info(msg string, custom map[string]string) (uuid string, e error)
-	Debug(msg string, custom map[string]string) (uuid string, e error)
+	Critical(err error, custom map[string]interface{}) (uuid string, e error)
+	CriticalStack(err error, ptrs []uintptr, custom map[string]interface{}) (uuid string, e error)
+	Error(err error, custom map[string]interface{}) (uuid string, e error)
+	ErrorStack(err error, ptrs []uintptr, custom map[string]interface{}) (uuid string, e error)
+	Warning(err error, custom map[string]interface{}) (uuid string, e error)
+	WarningStack(err error, ptrs []uintptr, custom map[string]interface{}) (uuid string, e error)
+	Info(msg string, custom map[string]interface{}) (uuid string, e error)
+	Debug(msg string, custom map[string]interface{}) (uuid string, e error)
 }
 
 type rollbarClient struct {
@@ -66,76 +66,76 @@ func New(token, env string) Client {
 	return &rollbarClient{token, env}
 }
 
-func Critical(err error, custom map[string]string) (uuid string, e error) {
+func Critical(err error, custom map[string]interface{}) (uuid string, e error) {
 	return CriticalStack(err, getCallers(2), custom)
 }
 
-func CriticalStack(err error, ptrs []uintptr, custom map[string]string) (uuid string, e error) {
+func CriticalStack(err error, ptrs []uintptr, custom map[string]interface{}) (uuid string, e error) {
 	return New(Token, Environment).CriticalStack(err, ptrs, custom)
 }
 
-func Error(err error, custom map[string]string) (uuid string, e error) {
+func Error(err error, custom map[string]interface{}) (uuid string, e error) {
 	return ErrorStack(err, getCallers(2), custom)
 }
 
-func ErrorStack(err error, ptrs []uintptr, custom map[string]string) (uuid string, e error) {
+func ErrorStack(err error, ptrs []uintptr, custom map[string]interface{}) (uuid string, e error) {
 	return New(Token, Environment).ErrorStack(err, ptrs, custom)
 }
 
-func Warning(err error, custom map[string]string) (uuid string, e error) {
+func Warning(err error, custom map[string]interface{}) (uuid string, e error) {
 	return WarningStack(err, getCallers(2), custom)
 }
 
-func WarningStack(err error, ptrs []uintptr, custom map[string]string) (uuid string, e error) {
+func WarningStack(err error, ptrs []uintptr, custom map[string]interface{}) (uuid string, e error) {
 	return New(Token, Environment).WarningStack(err, ptrs, custom)
 }
 
-func Info(msg string, custom map[string]string) (uuid string, e error) {
+func Info(msg string, custom map[string]interface{}) (uuid string, e error) {
 	return New(Token, Environment).Info(msg, custom)
 }
 
-func Debug(msg string, custom map[string]string) (uuid string, e error) {
+func Debug(msg string, custom map[string]interface{}) (uuid string, e error) {
 	return New(Token, Environment).Debug(msg, custom)
 }
 
-func (c *rollbarClient) Critical(err error, custom map[string]string) (uuid string, e error) {
+func (c *rollbarClient) Critical(err error, custom map[string]interface{}) (uuid string, e error) {
 	return c.CriticalStack(err, getCallers(2), custom)
 }
 
-func (c *rollbarClient) CriticalStack(err error, callers []uintptr, custom map[string]string) (uuid string, e error) {
+func (c *rollbarClient) CriticalStack(err error, callers []uintptr, custom map[string]interface{}) (uuid string, e error) {
 	item := c.buildTraceItem("critical", err, callers, custom)
 	return c.send(item)
 }
 
-func (c *rollbarClient) Error(err error, custom map[string]string) (uuid string, e error) {
+func (c *rollbarClient) Error(err error, custom map[string]interface{}) (uuid string, e error) {
 	return c.ErrorStack(err, getCallers(2), custom)
 }
 
-func (c *rollbarClient) ErrorStack(err error, callers []uintptr, custom map[string]string) (uuid string, e error) {
+func (c *rollbarClient) ErrorStack(err error, callers []uintptr, custom map[string]interface{}) (uuid string, e error) {
 	item := c.buildTraceItem("error", err, callers, custom)
 	return c.send(item)
 }
 
-func (c *rollbarClient) Warning(err error, custom map[string]string) (uuid string, e error) {
+func (c *rollbarClient) Warning(err error, custom map[string]interface{}) (uuid string, e error) {
 	return c.WarningStack(err, getCallers(2), custom)
 }
 
-func (c *rollbarClient) WarningStack(err error, callers []uintptr, custom map[string]string) (uuid string, e error) {
+func (c *rollbarClient) WarningStack(err error, callers []uintptr, custom map[string]interface{}) (uuid string, e error) {
 	item := c.buildTraceItem("warning", err, callers, custom)
 	return c.send(item)
 }
 
-func (c *rollbarClient) Info(msg string, custom map[string]string) (uuid string, e error) {
+func (c *rollbarClient) Info(msg string, custom map[string]interface{}) (uuid string, e error) {
 	item := c.buildMessageItem("info", msg, custom)
 	return c.send(item)
 }
 
-func (c *rollbarClient) Debug(msg string, custom map[string]string) (uuid string, e error) {
+func (c *rollbarClient) Debug(msg string, custom map[string]interface{}) (uuid string, e error) {
 	item := c.buildMessageItem("debug", msg, custom)
 	return c.send(item)
 }
 
-func (c *rollbarClient) buildTraceItem(level string, err error, callers []uintptr, custom map[string]string) (item map[string]interface{}) {
+func (c *rollbarClient) buildTraceItem(level string, err error, callers []uintptr, custom map[string]interface{}) (item map[string]interface{}) {
 	stack := buildRollbarFrames(callers)
 	item = c.buildItem(level, err.Error(), custom)
 	itemData := item["data"].(map[string]interface{})
@@ -153,7 +153,7 @@ func (c *rollbarClient) buildTraceItem(level string, err error, callers []uintpt
 	return item
 }
 
-func (c *rollbarClient) buildMessageItem(level string, msg string, custom map[string]string) (item map[string]interface{}) {
+func (c *rollbarClient) buildMessageItem(level string, msg string, custom map[string]interface{}) (item map[string]interface{}) {
 	item = c.buildItem(level, msg, custom)
 	itemData := item["data"].(map[string]interface{})
 	itemData["body"] = map[string]interface{}{
@@ -165,10 +165,20 @@ func (c *rollbarClient) buildMessageItem(level string, msg string, custom map[st
 	return item
 }
 
-func (c *rollbarClient) buildItem(level, title string, custom map[string]string) map[string]interface{} {
+func (c *rollbarClient) buildItem(level, title string, custom map[string]interface{}) map[string]interface{} {
 	hostname, _ := os.Hostname()
 
-	return map[string]interface{}{
+	// there are two special keys we support for custom, "person" and "request",
+	// which need to be filled out with the calling program.  these keys will be
+	// promoted from custom to real fields
+
+	// not too sure if we should modify custom??
+	request := custom["request"]
+	delete(custom, "request")
+	person := custom["person"]
+	delete(custom, "person")
+
+	res := map[string]interface{}{
 		"access_token": c.token,
 		"data": map[string]interface{}{
 			"environment": c.env,
@@ -187,6 +197,13 @@ func (c *rollbarClient) buildItem(level, title string, custom map[string]string)
 			"custom": custom,
 		},
 	}
+	if request != nil {
+		res["request"] = request
+	}
+	if person != nil {
+		res["person"] = person
+	}
+	return res
 }
 
 // send reports the given item to Rollbar and returns either a UUID for the
@@ -222,7 +239,7 @@ func (c *rollbarClient) send(item map[string]interface{}) (uuid string, err erro
 	success := rollbarSuccess{}
 	json.Unmarshal(body, &success)
 
-	return success.Result["uuid"], nil
+	return success.Result["uuid"].(string), nil
 }
 
 // errorClass returns a class name for an error (eg.  "ErrUnexpectedEOF"). For

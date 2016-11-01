@@ -64,7 +64,7 @@ func TestCritical(t *testing.T) {
 	teardown := setup()
 	defer teardown()
 
-	uuid, err := Critical(errors.New("global critical"), map[string]string{"extras": "true"})
+	uuid, err := Critical(errors.New("global critical"), map[string]interface{}{"extras": "true"})
 	if err != nil {
 		t.Error(err)
 	}
@@ -77,7 +77,7 @@ func TestError(t *testing.T) {
 	teardown := setup()
 	defer teardown()
 
-	uuid, err := Error(errors.New("global error"), map[string]string{"extras": "true"})
+	uuid, err := Error(errors.New("global error"), map[string]interface{}{"extras": "true"})
 	if err != nil {
 		t.Error(err)
 	}
@@ -90,7 +90,7 @@ func TestWarning(t *testing.T) {
 	teardown := setup()
 	defer teardown()
 
-	uuid, err := Warning(errors.New("global warning"), map[string]string{"extras": "true"})
+	uuid, err := Warning(errors.New("global warning"), map[string]interface{}{"extras": "true"})
 	if err != nil {
 		t.Error(err)
 	}
@@ -103,7 +103,7 @@ func TestInfo(t *testing.T) {
 	teardown := setup()
 	defer teardown()
 
-	uuid, err := Info("global info", map[string]string{"extras": "true"})
+	uuid, err := Info("global info", map[string]interface{}{"extras": "true"})
 	if err != nil {
 		t.Error(err)
 	}
@@ -116,7 +116,7 @@ func TestDebug(t *testing.T) {
 	teardown := setup()
 	defer teardown()
 
-	uuid, err := Debug("global debug", map[string]string{"extras": "true"})
+	uuid, err := Debug("global debug", map[string]interface{}{"extras": "true"})
 	if err != nil {
 		t.Error(err)
 	}
@@ -131,7 +131,7 @@ func TestRollbarClientCritical(t *testing.T) {
 
 	client := New(Token, "test")
 
-	uuid, err := client.Critical(errors.New("new client critical"), map[string]string{"extras": "true"})
+	uuid, err := client.Critical(errors.New("new client critical"), map[string]interface{}{"extras": "true"})
 	if err != nil {
 		t.Error(err)
 	}
@@ -146,7 +146,7 @@ func TestRollbarClientError(t *testing.T) {
 
 	client := New(Token, "test")
 
-	uuid, err := client.Error(errors.New("new client error"), map[string]string{"extras": "true"})
+	uuid, err := client.Error(errors.New("new client error"), map[string]interface{}{"extras": "true"})
 	if err != nil {
 		t.Error(err)
 	}
@@ -161,7 +161,7 @@ func TestRollbarClientWarning(t *testing.T) {
 
 	client := New(Token, "test")
 
-	uuid, err := client.Warning(errors.New("new client warning"), map[string]string{"extras": "true"})
+	uuid, err := client.Warning(errors.New("new client warning"), map[string]interface{}{"extras": "true"})
 	if err != nil {
 		t.Error(err)
 	}
@@ -176,7 +176,7 @@ func TestRollbarClientInfo(t *testing.T) {
 
 	client := New(Token, "test")
 
-	uuid, err := client.Info("new client info", map[string]string{"extras": "true"})
+	uuid, err := client.Info("new client info", map[string]interface{}{"extras": "true"})
 	if err != nil {
 		t.Error(err)
 	}
@@ -191,7 +191,7 @@ func TestRollbarClientDebug(t *testing.T) {
 
 	client := New(Token, "test")
 
-	uuid, err := client.Debug("new client debug", map[string]string{"extras": "true"})
+	uuid, err := client.Debug("new client debug", map[string]interface{}{"extras": "true"})
 	if err != nil {
 		t.Error(err)
 	}
@@ -206,7 +206,7 @@ func TestRollbarClientCriticalStack(t *testing.T) {
 
 	client := New(Token, "test")
 
-	uuid, err := client.CriticalStack(errors.New("new client critical"), getCallers(0), map[string]string{"extras": "true"})
+	uuid, err := client.CriticalStack(errors.New("new client critical"), getCallers(0), map[string]interface{}{"extras": "true"})
 	if err != nil {
 		t.Error(err)
 	}
@@ -221,7 +221,7 @@ func TestRollbarClientErrorStack(t *testing.T) {
 
 	client := New(Token, "test")
 
-	uuid, err := client.ErrorStack(errors.New("new client error"), getCallers(0), map[string]string{"extras": "true"})
+	uuid, err := client.ErrorStack(errors.New("new client error"), getCallers(0), map[string]interface{}{"extras": "true"})
 	if err != nil {
 		t.Error(err)
 	}
@@ -236,7 +236,7 @@ func TestRollbarClientWarningStack(t *testing.T) {
 
 	client := New(Token, "test")
 
-	uuid, err := client.WarningStack(errors.New("new client warning"), getCallers(0), map[string]string{"extras": "true"})
+	uuid, err := client.WarningStack(errors.New("new client warning"), getCallers(0), map[string]interface{}{"extras": "true"})
 	if err != nil {
 		t.Error(err)
 	}
